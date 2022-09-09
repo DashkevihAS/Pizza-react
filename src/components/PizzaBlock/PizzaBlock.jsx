@@ -16,6 +16,8 @@ function PizzaBlock({ title, price, imageUrl, sizes, types }) {
         className="pizza-block__image"
         src={imageUrl}
         alt="Pizza"
+        width={260}
+        height={260}
       />
       <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
@@ -80,7 +82,7 @@ export default PizzaBlock;
 
 PizzaBlock.propTypes = {
   title: PropTypes.string,
-  price: PropTypes.string,
+  price: PropTypes.number,
   imageUrl: PropTypes.string,
   sizes: PropTypes.array,
   types: PropTypes.array,

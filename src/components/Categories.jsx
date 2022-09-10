@@ -1,9 +1,8 @@
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const Caterories = () => {
-  const [activeIndex, setActiveIndex] = React.useState(0);
-
+const Caterories = ({ value, setValue }) => {
   const categories = [
     'Все',
     'Мясные',
@@ -13,21 +12,17 @@ const Caterories = () => {
     'Закрытые'
   ];
 
-  const onClickCategory = (index) => {
-    setActiveIndex(index);
-  };
-
   return (
     <div className="categories">
       <ul>
         {
-          categories.map((value, i) => (
+          categories.map((item, i) => (
             <li
               key={i}
-              onClick={() => onClickCategory(i)}
-              className={activeIndex === i ? 'active' : ''}
+              onClick={() => setValue(i)}
+              className={value === i ? 'active' : ''}
             >
-              {value}
+              {item}
             </li>
           ))
         }
@@ -37,3 +32,8 @@ const Caterories = () => {
 };
 
 export default Caterories;
+
+Caterories.propTypes = {
+  value: PropTypes.number,
+  setValue: PropTypes.func,
+};

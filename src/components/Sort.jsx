@@ -1,15 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const Sort = () => {
-  const [selected, setSelected] = React.useState('популярности');
+const Sort = ({ sortType, setType }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const onClickSortValue = (value) => {
-    setSelected(value);
+    setType(value);
     setIsOpen(false);
   };
 
-  const sortValues = ['популярности', 'цене', 'алфавиту'];
+  const sortValues = [
+    { name: 'популярности по убыванию', sortProperty: '-rating' },
+    { name: 'популярности по возрастанию', sortProperty: 'rating' },
+    { name: 'цене по убыванию', sortProperty: '-price' },
+    { name: 'цене по возрастанию', sortProperty: 'price' },
+    { name: 'алфавиту (А - Я)', sortProperty: 'title' },
+    { name: 'алфавиту (Я - А)', sortProperty: '-title' },
+  ];
   return (
     <div className="sort">
       <div className="sort__label">
@@ -35,19 +42,19 @@ const Sort = () => {
         <b>Сортировка по:</b>
         <span
           onClick={() => setIsOpen(!isOpen)}
-        >{selected}</span>
+        >{sortType.name}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
           <ul>
             {
-              sortValues.map((value, i) => (
+              sortValues.map((obj, i) => (
                 <li
                   key={i}
-                  className={selected === value ? 'active' : ''}
-                  onClick={() => onClickSortValue(value)}
+                  className={sortType.name === obj.name ? 'active' : ''}
+                  onClick={() => onClickSortValue(obj)}
                 >
-                  {value}
+                  {obj.name}
                 </li>
               ))
             }
@@ -59,3 +66,9 @@ const Sort = () => {
 };
 
 export default Sort;
+
+Sort.propTypes = {
+  sortType: PropTypes.number,
+  setType: PropTypes.func,
+};
+

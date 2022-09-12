@@ -68,7 +68,7 @@ const Sort = ({ sortType, setType }) => {
 export default Sort;
 
 Sort.propTypes = {
-  sortType: PropTypes.number,
+  sortType: PropTypes.object,
   setType: PropTypes.func,
 };
 

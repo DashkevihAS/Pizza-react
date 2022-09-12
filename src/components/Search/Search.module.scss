@@ -1,0 +1,45 @@
+.root {
+  position: relative;
+  left: -120px;
+}
+
+.icon {
+  height: 24px;
+  width: 24px;
+  opacity: 0.3;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10px;
+}
+
+
+.search {
+  width: 400px;
+  padding: 12px 40px;
+
+  font-size: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  transition: all .2s ease-in-out;
+
+  &:focus {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+}
+
+.close {
+  height: 24px;
+  width: 24px;
+  opacity: 0.3;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 10px;
+  transition: all .2s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+}

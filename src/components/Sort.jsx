@@ -1,22 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSort } from '../redux/slices/filterSlice';
 
-const Sort = ({ sortType, setType }) => {
+const sortValues = [
+  { name: 'популярности по убыванию', sortProperty: '-rating' },
+  { name: 'популярности по возрастанию', sortProperty: 'rating' },
+  { name: 'цене по убыванию', sortProperty: '-price' },
+  { name: 'цене по возрастанию', sortProperty: 'price' },
+  { name: 'алфавиту (А - Я)', sortProperty: 'title' },
+  { name: 'алфавиту (Я - А)', sortProperty: '-title' },
+];
+
+const Sort = () => {
   const [isOpen, setIsOpen] = React.useState(false);
 
+  const sort = useSelector(state => state.filter.sort);
+  const dispatch = useDispatch();
+
   const onClickSortValue = (value) => {
-    setType(value);
+    dispatch(setSort(value));
     setIsOpen(false);
   };
 
-  const sortValues = [
-    { name: 'популярности по убыванию', sortProperty: '-rating' },
-    { name: 'популярности по возрастанию', sortProperty: 'rating' },
-    { name: 'цене по убыванию', sortProperty: '-price' },
-    { name: 'цене по возрастанию', sortProperty: 'price' },
-    { name: 'алфавиту (А - Я)', sortProperty: 'title' },
-    { name: 'алфавиту (Я - А)', sortProperty: '-title' },
-  ];
   return (
     <div className="sort">
       <div className="sort__label">
@@ -42,7 +47,7 @@ const Sort = ({ sortType, setType }) => {
         <b>Сортировка по:</b>
         <span
           onClick={() => setIsOpen(!isOpen)}
-        >{sortType.name}</span>
+        >{sort.name}</span>
       </div>
       {isOpen && (
         <div className="sort__popup">
@@ -51,7 +56,7 @@ const Sort = ({ sortType, setType }) => {
               sortValues.map((obj, i) => (
                 <li
                   key={i}
-                  className={sortType.name === obj.name ? 'active' : ''}
+                  className={sort.name === obj.name ? 'active' : ''}
                   onClick={() => onClickSortValue(obj)}
                 >
                   {obj.name}
@@ -66,9 +71,4 @@ const Sort = ({ sortType, setType }) => {
 };
 
 export default Sort;
-
-Sort.propTypes = {
-  sortType: PropTypes.object,
-  setType: PropTypes.func,
-};
 

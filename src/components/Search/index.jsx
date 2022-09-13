@@ -1,10 +1,13 @@
 import React from 'react';
-import { SearchContext } from '../../App';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchValue } from '../../redux/slices/filterSlice';
 
 import styles from './Search.module.scss';
 
 const Search = () => {
-  const { setSearchValue, searchValue } = React.useContext(SearchContext);
+  const { searchValue } = useSelector(state => state.filter);
+  const dispatch = useDispatch();
+
   return (
     <div className={styles.root} >
       <svg
@@ -23,11 +26,11 @@ const Search = () => {
         placeholder='Поиск пиццы ...'
         type="text"
         value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        onChange={(e) => dispatch(setSearchValue(e.target.value))}
       />
       {
         searchValue && (
-          <svg onClick={() => setSearchValue('')} className={styles.close} height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83 11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"/><path d="M0 0h48v48h-48z" fill="none"/></svg>
+          <svg onClick={() => dispatch(setSearchValue(''))} className={styles.close} height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83 11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"/><path d="M0 0h48v48h-48z" fill="none"/></svg>
         )
       }
     </div>

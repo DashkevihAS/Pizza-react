@@ -1,16 +1,20 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCategoryId } from '../redux/slices/filterSlice';
 
-const Caterories = ({ value, setValue }) => {
-  const categories = [
-    'Все',
-    'Мясные',
-    'Вегетарианская',
-    'Гриль',
-    'Острые',
-    'Закрытые'
-  ];
+const categories = [
+  'Все',
+  'Мясные',
+  'Вегетарианская',
+  'Гриль',
+  'Острые',
+  'Закрытые'
+];
+
+const Caterories = () => {
+  const categoryId = useSelector(state => state.filter.categoryId);
+  const dispatch = useDispatch();
 
   return (
     <div className="categories">
@@ -19,8 +23,8 @@ const Caterories = ({ value, setValue }) => {
           categories.map((item, i) => (
             <li
               key={i}
-              onClick={() => setValue(i)}
-              className={value === i ? 'active' : ''}
+              onClick={() => dispatch(setCategoryId(i))}
+              className={categoryId === i ? 'active' : ''}
             >
               {item}
             </li>
@@ -32,8 +36,3 @@ const Caterories = ({ value, setValue }) => {
 };
 
 export default Caterories;
-
-Caterories.propTypes = {
-  value: PropTypes.number,
-  setValue: PropTypes.func,
-};

@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: space-between;
 
-    @media (max-width: 645px) {
+    @media (max-width: 1100px) {
       flex-direction: column-reverse;
 
       .header__cart {
@@ -37,4 +37,5 @@
       color: #7b7b7b;
     }
   }
+
 }

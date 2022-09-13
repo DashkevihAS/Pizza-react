@@ -1,12 +1,34 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import debounce from 'lodash.debounce';
+
 import { setSearchValue } from '../../redux/slices/filterSlice';
 
 import styles from './Search.module.scss';
 
 const Search = () => {
-  const { searchValue } = useSelector(state => state.filter);
+  const [value, setValue] = React.useState('');
   const dispatch = useDispatch();
+
+  const inputRef = React.useRef(null);
+
+  const onClickClear = () => {
+    dispatch(setSearchValue(''));
+    inputRef.current.focus();
+    setValue('');
+  };
+
+  const updateSearchValue = React.useCallback(
+    debounce((str) => {
+      dispatch(setSearchValue(str));
+    }, 500),
+    []
+  );
+
+  const onChangeInput = (event) => {
+    setValue(event.target.value);
+    updateSearchValue(event.target.value);
+  };
 
   return (
     <div className={styles.root} >
@@ -22,15 +44,16 @@ const Search = () => {
         </g>
       </svg>
       <input
+        ref={inputRef}
         className={styles.search}
         placeholder='Поиск пиццы ...'
         type="text"
-        value={searchValue}
-        onChange={(e) => dispatch(setSearchValue(e.target.value))}
+        value={value}
+        onChange={onChangeInput}
       />
       {
-        searchValue && (
-          <svg onClick={() => dispatch(setSearchValue(''))} className={styles.close} height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83 11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"/><path d="M0 0h48v48h-48z" fill="none"/></svg>
+        value && (
+          <svg onClick={onClickClear} className={styles.close} height="48" viewBox="0 0 48 48" width="48" xmlns="http://www.w3.org/2000/svg"><path d="M38 12.83l-2.83-2.83-11.17 11.17-11.17-11.17-2.83 2.83 11.17 11.17-11.17 11.17 2.83 2.83 11.17-11.17 11.17 11.17 2.83-2.83-11.17-11.17z"/><path d="M0 0h48v48h-48z" fill="none"/></svg>
         )
       }
     </div>

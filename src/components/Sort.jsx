@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSort } from '../redux/slices/filterSlice';
 
-const sortValues = [
+export const sortValues = [
   { name: 'популярности по убыванию', sortProperty: '-rating' },
   { name: 'популярности по возрастанию', sortProperty: 'rating' },
   { name: 'цене по убыванию', sortProperty: '-price' },
@@ -13,6 +13,7 @@ const sortValues = [
 
 const Sort = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const sortRef = React.useRef(null);
 
   const sort = useSelector(state => state.filter.sort);
   const dispatch = useDispatch();
@@ -22,8 +23,31 @@ const Sort = () => {
     setIsOpen(false);
   };
 
+  React.useEffect(() => {
+    const handleClickOutside = event => {
+      if (!event.path.includes(sortRef.current)) {
+        setIsOpen(false);
+      }
+    };
+
+    const handleClickEscape = event => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    document.body.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleClickEscape);
+
+    return () => {
+      document.body.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('keydown', handleClickEscape);
+    };
+  }, []);
+
+
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           width="10"

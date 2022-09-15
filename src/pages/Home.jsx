@@ -1,16 +1,15 @@
 import React from 'react';
-import axios from 'axios';
 import qs from 'qs';
 
 import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Sort, { sortValues } from '../components/Sort';
 import Categories from '../components/Categories';
-import { URI_API } from '../const/const';
 import Pagination from '../components/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setFilters } from '../redux/slices/filterSlice';
+import { fetchPizzas } from '../redux/slices/pizzasSlice';
 
 
 export const Home = () => {
@@ -19,8 +18,7 @@ export const Home = () => {
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
 
-  const [pizzas, setPizzas] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const { items, status } = useSelector(state => state.pizzas);
 
   const {
     categoryId,
@@ -29,22 +27,19 @@ export const Home = () => {
     currentPage,
   } = useSelector(state => state.filter);
 
-  const fetchPizzas = () => {
-    setIsLoading(true);
-
+  const getPizzas = () => {
     const category = categoryId > 0 ? `&category=${categoryId}` : '';
     const sortBy = sort.sortProperty.replace('-', '');
     const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    axios.get(
-      // eslint-disable-next-line max-len
-      `${URI_API}?page=${currentPage}&limit=4${category}&sortBy=${sortBy}&order=${order}${search}`
-    )
-      .then(res => {
-        setPizzas(res.data);
-        setIsLoading(false);
-      });
+    dispatch(fetchPizzas({
+      category,
+      sortBy,
+      order,
+      search,
+      currentPage,
+    }));
   };
 
   React.useEffect(() => {
@@ -83,7 +78,7 @@ export const Home = () => {
     // с их дефолтными значениями, а только после тогоб
     // как значения возьмутся из строки и запишутся в редакс диспатчем
     if (!isSearch.current) {
-      fetchPizzas();
+      getPizzas();
     }
     isSearch.current = false;
 
@@ -92,7 +87,7 @@ export const Home = () => {
 
   const skeletons = [...new Array(6)].map((_, i) => (<Skeleton key={i}/>));
 
-  const items = pizzas.map((pizzaObj) => (
+  const pizzas = items.map((pizzaObj) => (
     <PizzaBlock
       key={pizzaObj.id}
       // title={title}
@@ -111,11 +106,19 @@ export const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {
-          isLoading ? skeletons : items
-        }
-      </div>
+      {
+        status === 'error' ? (
+        <div className='error'>
+          <h2>Произошла ошибка 😕</h2>
+          <p> К сожалению, не удалось получить пиццы.
+          Попробуйте повторить попытку позже ... </p>
+        </div>
+        ) : (
+          <div className="content__items">
+            { status === 'loading' ? skeletons : pizzas }
+          </div>
+        )
+      }
       <Pagination />
     </div>
   );

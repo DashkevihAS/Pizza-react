@@ -7,10 +7,10 @@ import { setSearchValue } from '../../redux/slices/filterSlice';
 import styles from './Search.module.scss';
 
 const Search = () => {
-  const [value, setValue] = React.useState('');
   const dispatch = useDispatch();
-
   const inputRef = React.useRef(null);
+
+  const [value, setValue] = React.useState('');
 
   const onClickClear = () => {
     dispatch(setSearchValue(''));

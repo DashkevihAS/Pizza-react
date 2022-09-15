@@ -41,4 +41,8 @@ export const {
   setFilters,
 } = filterSlice.actions;
 
+export const selectSort = state => state.filter.sort;
+export const selectFilter = state => state.filter;
+export const selectFilterCategoryId = state => state.filter;
+
 export default filterSlice.reducer;

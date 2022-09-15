@@ -8,8 +8,8 @@ import Categories from '../components/Categories';
 import Pagination from '../components/Pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setFilters } from '../redux/slices/filterSlice';
-import { fetchPizzas } from '../redux/slices/pizzasSlice';
+import { selectFilter, setFilters } from '../redux/slices/filterSlice';
+import { fetchPizzas, selectPizzasData } from '../redux/slices/pizzasSlice';
 
 
 export const Home = () => {
@@ -18,14 +18,14 @@ export const Home = () => {
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
 
-  const { items, status } = useSelector(state => state.pizzas);
+  const { items, status } = useSelector(selectPizzasData);
 
   const {
     categoryId,
     sort,
     searchValue,
     currentPage,
-  } = useSelector(state => state.filter);
+  } = useSelector(selectFilter);
 
   const getPizzas = () => {
     const category = categoryId > 0 ? `&category=${categoryId}` : '';

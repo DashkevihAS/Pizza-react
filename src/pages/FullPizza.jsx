@@ -1,18 +1,45 @@
+import axios from 'axios';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, selectCartItemById } from '../../redux/slices/cartSlise';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { URI_API } from '../const/const';
+import { addItem, selectCartItemById } from '../redux/slices/cartSlise';
 
 const typeNames = ['тонкое', 'традиционное'];
 
-function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
+const FullPizza = () => {
   const dispatch = useDispatch();
-  const cartItem = useSelector(selectCartItemById(id));
+  const navigate = useNavigate();
+  const [pizza, setPizza] = React.useState();
+  const { id } = useParams();
+
   const [activeSize, setActiveSize] = React.useState(0);
   const [activeType, setActiveType] = React.useState(0);
+  const cartItem = useSelector(selectCartItemById(id));
+
 
   const count = cartItem ? cartItem.count : 0;
+
+  React.useEffect(() => {
+    async function fetchPizza() {
+      try {
+        const { data } = await axios.get(`${URI_API}/${id} `);
+        setPizza(data);
+      } catch (error) {
+        alert('Ошибка при получении пиццы!');
+        navigate('/');
+      }
+    }
+
+    fetchPizza();
+  }, []);
+
+
+  if (!pizza) return 'Загрузка...';
+
+  const { imageUrl, title, types, sizes, price } = pizza;
+
+  const isAlone = types.length === 1 ? 'active' : '';
 
   const onClickAdd = () => {
     const item = {
@@ -26,20 +53,16 @@ function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
     dispatch(addItem(item));
   };
 
-  const isAlone = types.length === 1 ? 'active' : '';
-
   return (
-    <div className="pizza-block">
-      <Link to={`/pizza/${id}`} >
-        <img
-          className="pizza-block__image"
-          src={imageUrl}
-          alt="Pizza"
-          width={260}
-          height={260}
-        />
-        <h4 className="pizza-block__title">{title}</h4>
-      </Link>
+    <div className="pizza-block pizza-block_full">
+      <img
+        className="pizza-block__image"
+        src={imageUrl}
+        alt="Pizza"
+        width={260}
+        height={260}
+      />
+      <h4 className="pizza-block__title">{title}</h4>
       <div className="pizza-block__selector">
         <ul>
           {
@@ -97,16 +120,6 @@ function PizzaBlock({ id, title, price, imageUrl, sizes, types }) {
       </div>
     </div>
   );
-}
-
-export default PizzaBlock;
-
-PizzaBlock.propTypes = {
-  title: PropTypes.string,
-  price: PropTypes.number,
-  id: PropTypes.string,
-  imageUrl: PropTypes.string,
-  sizes: PropTypes.array,
-  types: PropTypes.array,
 };
 
+export default FullPizza;

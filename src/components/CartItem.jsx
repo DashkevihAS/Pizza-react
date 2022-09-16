@@ -70,7 +70,7 @@ CartItem.propTypes = {
   title: PropTypes.string,
   price: PropTypes.number,
   count: PropTypes.number,
-  id: PropTypes.number,
+  id: PropTypes.string,
   imageUrl: PropTypes.string,
   size: PropTypes.number,
   type: PropTypes.string,

@@ -2,9 +2,9 @@ import React from 'react';
 
 import styles from './NotFoundBlock.module.scss';
 
-const NotFoundBlock = () => (
+const NotFoundBlock: React.FC = () => (
   <div className={styles.root}>
-    <h1 >
+    <h1>
       <span>😕</span>
       <br />
       Ничего не найдено

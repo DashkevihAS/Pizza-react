@@ -11,8 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { selectFilter, setFilters } from '../redux/slices/filterSlice';
 import { fetchPizzas, selectPizzasData } from '../redux/slices/pizzasSlice';
 
-
-export const Home = () => {
+export const Home: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isSearch = React.useRef(false);
@@ -20,12 +19,8 @@ export const Home = () => {
 
   const { items, status } = useSelector(selectPizzasData);
 
-  const {
-    categoryId,
-    sort,
-    searchValue,
-    currentPage,
-  } = useSelector(selectFilter);
+  const { categoryId, sort, searchValue, currentPage } =
+    useSelector(selectFilter);
 
   const getPizzas = () => {
     const category = categoryId > 0 ? `&category=${categoryId}` : '';
@@ -33,13 +28,16 @@ export const Home = () => {
     const order = sort.sortProperty.includes('-') ? 'desc' : 'asc';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    dispatch(fetchPizzas({
-      category,
-      sortBy,
-      order,
-      search,
-      currentPage,
-    }));
+    dispatch(
+      // @ts-ignore
+      fetchPizzas({
+        category,
+        sortBy,
+        order,
+        search,
+        currentPage,
+      }),
+    );
   };
 
   React.useEffect(() => {
@@ -56,7 +54,7 @@ export const Home = () => {
       navigate(`?${queryString}`);
     }
     isMounted.current = true; // после самого первого рендера установит true
-  }, [categoryId, sort, currentPage]);
+  }, [categoryId, sort, currentPage, navigate]);
 
   // Если был первый рендер, то проверяем URL параметры
   // и сохраняем в редаксе
@@ -64,13 +62,15 @@ export const Home = () => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
 
-      const sort = sortValues.find(obj =>
-        obj.sortProperty === params.sortProperty);
+      const sort = sortValues.find(
+        (obj) => obj.sortProperty === params.sortProperty,
+      );
 
       dispatch(setFilters({ ...params, sort }));
 
       isSearch.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -83,11 +83,12 @@ export const Home = () => {
     isSearch.current = false;
 
     window.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, sort, searchValue, currentPage]);
 
-  const skeletons = [...new Array(6)].map((_, i) => (<Skeleton key={i}/>));
+  const skeletons = [...new Array(6)].map((_, i) => <Skeleton key={i} />);
 
-  const pizzas = items.map((pizzaObj) => (
+  const pizzas = items.map((pizzaObj: any) => (
     <PizzaBlock
       key={pizzaObj.id}
       // title={title}
@@ -100,27 +101,27 @@ export const Home = () => {
   ));
 
   return (
-    <div className="container">
-      <div className="content__top">
+    <div className='container'>
+      <div className='content__top'>
         <Categories />
         <Sort />
       </div>
-      <h2 className="content__title">Все пиццы</h2>
-      {
-        status === 'error' ? (
+      <h2 className='content__title'>Все пиццы</h2>
+      {status === 'error' ? (
         <div className='error'>
           <h2>Произошла ошибка 😕</h2>
-          <p> К сожалению, не удалось получить пиццы.
-          Попробуйте повторить попытку позже ... </p>
+          <p>
+            {' '}
+            К сожалению, не удалось получить пиццы. Попробуйте повторить попытку
+            позже ...{' '}
+          </p>
         </div>
-        ) : (
-          <div className="content__items">
-            { status === 'loading' ? skeletons : pizzas }
-          </div>
-        )
-      }
+      ) : (
+        <div className='content__items'>
+          {status === 'loading' ? skeletons : pizzas}
+        </div>
+      )}
       <Pagination />
     </div>
   );
 };
-

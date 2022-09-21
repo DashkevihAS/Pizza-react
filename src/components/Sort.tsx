@@ -1,10 +1,6 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectSort,
-  setSort,
-  SortPropertyEnum,
-} from '../redux/slices/filterSlice';
+import { useDispatch } from 'react-redux';
+import { setSort, Sort, SortPropertyEnum } from '../redux/slices/filterSlice';
 
 type SortItem = {
   name: string;
@@ -13,6 +9,10 @@ type SortItem = {
 
 type PopupClick = MouseEvent & {
   path: Node[];
+};
+
+type SortPopupProps = {
+  value: Sort;
 };
 
 export const sortValues: SortItem[] = [
@@ -30,11 +30,10 @@ export const sortValues: SortItem[] = [
   { name: 'алфавиту (Я - А)', sortProperty: SortPropertyEnum.TITLE_ASC },
 ];
 
-const SortPopup: React.FC = () => {
+const SortPopup: React.FC<SortPopupProps> = React.memo(({ value }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const sortRef = React.useRef<HTMLDivElement>(null);
 
-  const sort = useSelector(selectSort);
   const dispatch = useDispatch();
 
   const onClickSortValue = (value: SortItem) => {
@@ -65,7 +64,6 @@ const SortPopup: React.FC = () => {
     };
   }, []);
 
-  console.log(sort);
   return (
     <div ref={sortRef} className='sort'>
       <div className='sort__label'>
@@ -89,7 +87,7 @@ const SortPopup: React.FC = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsOpen(!isOpen)}>{sort.name}</span>
+        <span onClick={() => setIsOpen(!isOpen)}>{value.name}</span>
       </div>
       {isOpen && (
         <div className='sort__popup'>
@@ -97,7 +95,7 @@ const SortPopup: React.FC = () => {
             {sortValues.map((obj, i) => (
               <li
                 key={i}
-                className={sort.name === obj.name ? 'active' : ''}
+                className={value.name === obj.name ? 'active' : ''}
                 onClick={() => onClickSortValue(obj)}
               >
                 {obj.name}
@@ -108,6 +106,6 @@ const SortPopup: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default SortPopup;

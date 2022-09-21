@@ -29,7 +29,6 @@ body {
 .content {
   padding: 40px 0;
 
-
   &__title {
     margin: 50px 0;
     font-size: 38px;
@@ -42,7 +41,6 @@ body {
     grid-column-gap: 35px;
     grid-row-gap: 65px;
     place-items: center;
-
   }
 
   &__top {
@@ -87,7 +85,6 @@ body {
           margin-left: 10px;
         }
       }
-
     }
   }
 
@@ -258,6 +255,19 @@ body {
             display: none;
           }
         }
+        &:disabled {
+          opacity: 0.4;
+          border-color: #787878;
+          svg path {
+            fill: #787878;
+          }
+          &:hover {
+            background-color: transparent;
+          }
+          &:active {
+            transform: none;
+          }
+        }
       }
 
       b {
@@ -370,7 +380,6 @@ body {
         justify-content: center;
         width: 210px;
 
-
         border-color: darken($color: $gray-line, $amount: 10);
 
         span {
@@ -447,7 +456,6 @@ body {
     @media (max-width: 580px) {
       width: 360px;
       margin: 30px auto;
-
     }
 
     @media (max-width: 400px) {
@@ -475,7 +483,6 @@ body {
   text-align: center;
   margin: 60px auto;
 
-
   h2 {
     font-size: 32px;
     font-weight: 700;
@@ -486,6 +493,5 @@ body {
     padding: 40px;
     font-size: 20px;
     line-height: 150%;
-
   }
 }

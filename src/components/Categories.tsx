@@ -1,9 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectFilterCategoryId,
-  setCategoryId,
-} from '../redux/slices/filterSlice';
+import { selectFilter, setCategoryId } from '../redux/slices/filterSlice';
 
 const categories = [
   'Все',
@@ -15,7 +12,7 @@ const categories = [
 ];
 
 const Caterories: React.FC = () => {
-  const categoryId: number = useSelector(selectFilterCategoryId);
+  const { categoryId } = useSelector(selectFilter);
   const dispatch = useDispatch();
 
   return (

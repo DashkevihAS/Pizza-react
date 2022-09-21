@@ -6,15 +6,19 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
 import Sort, { sortValues } from '../components/Sort';
 import Categories from '../components/Categories';
 import Pagination from '../components/Pagination';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { selectFilter, setFilters } from '../redux/slices/filterSlice';
-import { fetchPizzas, selectPizzasData } from '../redux/slices/pizzasSlice';
+import {
+  fetchPizzas,
+  SearchPizzaParams,
+  selectPizzasData,
+} from '../redux/slices/pizzasSlice';
+import { useAppDispatch } from '../redux/store';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const isSearch = React.useRef(false);
+  const dispatch = useAppDispatch();
   const isMounted = React.useRef(false);
 
   const { items, status } = useSelector(selectPizzasData);
@@ -29,62 +33,72 @@ export const Home: React.FC = () => {
     const search = searchValue ? `&search=${searchValue}` : '';
 
     dispatch(
-      // @ts-ignore
       fetchPizzas({
         category,
         sortBy,
         order,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       }),
     );
+
+    window.scrollTo(0, 0);
   };
 
-  React.useEffect(() => {
-    // условие был ли первый рендер, чтобы при самом первом рендере
-    // не вшивались в строку дефолтные параметры,
-    // а только если выберем фильтра
-    if (isMounted.current) {
-      const queryString = qs.stringify({
-        sortProperty: sort.sortProperty,
-        categoryId,
-        currentPage,
-      });
+  // React.useEffect(() => {
+  //   // условие был ли первый рендер, чтобы при самом первом рендере
+  //   // не вшивались в строку дефолтные параметры,
+  //   // а только если выберем фильтра
+  //   if (isMounted.current) {
+  //     const queryString = qs.stringify({
+  //       sortProperty: sort.sortProperty,
+  //       categoryId,
+  //       currentPage,
+  //     });
 
-      navigate(`?${queryString}`);
-    }
-    isMounted.current = true; // после самого первого рендера установит true
-  }, [categoryId, sort, currentPage, navigate]);
+  //     navigate(`?${queryString}`);
+  //   }
+
+  //   if (!window.location.search) {
+  //     dispatch(fetchPizzas({} as SearchPizzaParams));
+  //   }
+  // }, [
+  //   categoryId,
+  //   sort.sortProperty,
+  //   currentPage,
+  //   searchValue,
+  //   navigate,
+  //   dispatch,
+  // ]);
+
+  React.useEffect(() => {
+    getPizzas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   // Если был первый рендер, то проверяем URL параметры
   // и сохраняем в редаксе
-  React.useEffect(() => {
-    if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
+  // React.useEffect(() => {
+  //   if (window.location.search) {
+  //     const params = qs.parse(
+  //       window.location.search.substring(1),
+  //     ) as unknown as SearchPizzaParams;
 
-      const sort = sortValues.find(
-        (obj) => obj.sortProperty === params.sortProperty,
-      );
+  //     const sort = sortValues.find((obj) => obj.sortProperty === params.sortBy);
 
-      dispatch(setFilters({ ...params, sort }));
+  //     dispatch(
+  //       setFilters({
+  //         categoryId: Number(params.category),
+  //         sort: sort || sortValues[0],
+  //         searchValue: params.search,
+  //         currentPage: Number(params.currentPage),
+  //       }),
+  //     );
+  //   }
+  //   isMounted.current = true; // после самого первого рендера установит true
 
-      isSearch.current = true;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    // чтобы при вставке ссылки с параметрами в строке не выполнялся запрос
-    // с их дефолтными значениями, а только после тогоб
-    // как значения возьмутся из строки и запишутся в редакс диспатчем
-    if (!isSearch.current) {
-      getPizzas();
-    }
-    isSearch.current = false;
-
-    window.scrollTo(0, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryId, sort, searchValue, currentPage]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const skeletons = [...new Array(6)].map((_, i) => <Skeleton key={i} />);
 

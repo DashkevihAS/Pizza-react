@@ -15,24 +15,24 @@ type CategoriesProps = {
   categoryId: number;
 };
 
-const Categories: React.FC<CategoriesProps> = React.memo(({ categoryId }) => {
-  const dispatch = useDispatch();
+export const Categories: React.FC<CategoriesProps> = React.memo(
+  ({ categoryId }) => {
+    const dispatch = useDispatch();
 
-  return (
-    <div className='categories'>
-      <ul>
-        {categories.map((item, i) => (
-          <li
-            key={i}
-            onClick={() => dispatch(setCategoryId(i))}
-            className={categoryId === i ? 'active' : ''}
-          >
-            {item}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-});
-
-export default Categories;
+    return (
+      <div className='categories'>
+        <ul>
+          {categories.map((item, i) => (
+            <li
+              key={i}
+              onClick={() => dispatch(setCategoryId(i))}
+              className={categoryId === i ? 'active' : ''}
+            >
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  },
+);

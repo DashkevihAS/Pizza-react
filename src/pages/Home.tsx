@@ -8,13 +8,11 @@ import Categories from '../components/Categories';
 import Pagination from '../components/Pagination';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { selectFilter, setFilters } from '../redux/slices/filterSlice';
-import {
-  fetchPizzas,
-  SearchPizzaParams,
-  selectPizzasData,
-} from '../redux/slices/pizzasSlice';
+import { setFilters } from '../redux/filter/slice';
+import { fetchPizzas } from '../redux/pizzas/asyncActions';
 import { useAppDispatch } from '../redux/store';
+import { selectFilter } from '../redux/filter/selectors';
+import { selectPizzasData } from '../redux/pizzas/selectors';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
